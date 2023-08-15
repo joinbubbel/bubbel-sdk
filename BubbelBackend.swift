@@ -47,7 +47,7 @@ struct BubbelCodegenOut: Codable {
     let t41: ResRegexSearchClubs?
     let t42: InRegexSearchUsers?
     let t43: ResRegexSearchUsers?
-    let t44: [String: JSONAny]?
+    let t44: InGetRandomClubs?
     let t45: ResGetRandomClubs?
     let t5: ResDeauthUser?
     let t6: InVerifyAccount?
@@ -114,7 +114,7 @@ extension BubbelCodegenOut {
         t41: ResRegexSearchClubs?? = nil,
         t42: InRegexSearchUsers?? = nil,
         t43: ResRegexSearchUsers?? = nil,
-        t44: [String: JSONAny]?? = nil,
+        t44: InGetRandomClubs?? = nil,
         t45: ResGetRandomClubs?? = nil,
         t5: ResDeauthUser?? = nil,
         t6: InVerifyAccount?? = nil,
@@ -3369,6 +3369,50 @@ extension RegexSearchUsersOut {
     ) -> RegexSearchUsersOut {
         return RegexSearchUsersOut(
             users: users ?? self.users
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - InGetRandomClubs
+struct InGetRandomClubs: Codable {
+    let ignore: JSONNull?
+
+    enum CodingKeys: String, CodingKey {
+        case ignore = "_ignore"
+    }
+}
+
+// MARK: InGetRandomClubs convenience initializers and mutators
+
+extension InGetRandomClubs {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InGetRandomClubs.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ignore: JSONNull?? = nil
+    ) -> InGetRandomClubs {
+        return InGetRandomClubs(
+            ignore: ignore ?? self.ignore
         )
     }
 

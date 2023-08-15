@@ -38,7 +38,7 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t41?: ResRegexSearchClubs;
     t42?: InRegexSearchUsers;
     t43?: ResRegexSearchUsers;
-    t44?: { [key: string]: any };
+    t44?: InGetRandomClubs;
     t45?: ResGetRandomClubs;
     t5?:  ResDeauthUser;
     t6?:  InVerifyAccount;
@@ -574,6 +574,11 @@ export interface RegexSearchUsersError {
 
 export interface RegexSearchUsersOut {
     users: Array<Array<number | string>>;
+    [property: string]: any;
+}
+
+export interface InGetRandomClubs {
+    _ignore?: null;
     [property: string]: any;
 }
 
