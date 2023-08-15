@@ -34,6 +34,12 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t38?: InGetUserClubs;
     t39?: ResGetUserClubs;
     t4?:  InDeauthUser;
+    t40?: InRegexSearchClubs;
+    t41?: ResRegexSearchClubs;
+    t42?: InRegexSearchUsers;
+    t43?: ResRegexSearchUsers;
+    t44?: { [key: string]: any };
+    t45?: ResGetRandomClubs;
     t5?:  ResDeauthUser;
     t6?:  InVerifyAccount;
     t7?:  ResVerifyAccount;
@@ -258,6 +264,7 @@ export enum IndigoType {
     Internal = "Internal",
     NoAuth = "NoAuth",
     NoAuthOwner = "NoAuthOwner",
+    SettingNameNotSupportedYet = "SettingNameNotSupportedYet",
     SettingOwnerNotSupportedYet = "SettingOwnerNotSupportedYet",
 }
 
@@ -519,6 +526,84 @@ export interface InDeauthUser {
     [property: string]: any;
 }
 
+export interface InRegexSearchClubs {
+    batch_index: number;
+    regex:       string;
+    [property: string]: any;
+}
+
+export interface ResRegexSearchClubs {
+    error?: null | RegexSearchClubsError;
+    res?:   null | RegexSearchClubsOut;
+    [property: string]: any;
+}
+
+export interface RegexSearchClubsError {
+    type:    FriskyType;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum FriskyType {
+    Internal = "Internal",
+    RegexLimit = "RegexLimit",
+}
+
+export interface RegexSearchClubsOut {
+    clubs: Array<Array<number | string>>;
+    [property: string]: any;
+}
+
+export interface InRegexSearchUsers {
+    batch_index: number;
+    regex:       string;
+    [property: string]: any;
+}
+
+export interface ResRegexSearchUsers {
+    error?: null | RegexSearchUsersError;
+    res?:   null | RegexSearchUsersOut;
+    [property: string]: any;
+}
+
+export interface RegexSearchUsersError {
+    type:    FriskyType;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export interface RegexSearchUsersOut {
+    users: Array<Array<number | string>>;
+    [property: string]: any;
+}
+
+export interface ResGetRandomClubs {
+    error?: null | GetRandomClubsError;
+    res?:   null | GetRandomClubsOut;
+    [property: string]: any;
+}
+
+export interface GetRandomClubsError {
+    ierror: string;
+    type:   GetClubMembersErrorType;
+    [property: string]: any;
+}
+
+export interface GetRandomClubsOut {
+    clubs: Array<Array<number | ClubProfile>>;
+    [property: string]: any;
+}
+
+export interface ClubProfile {
+    banner?:       null | string;
+    description?:  null | string;
+    display_name?: null | string;
+    name:          string;
+    owner:         number;
+    pfp?:          null | string;
+    [property: string]: any;
+}
+
 export interface ResDeauthUser {
     error?: null;
     res?:   null;
@@ -540,12 +625,12 @@ export interface ResVerifyAccount {
  * My favorite error message.
  */
 export interface VerifyAccountError {
-    type:    FriskyType;
+    type:    MischievousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum FriskyType {
+export enum MischievousType {
     CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
     Internal = "Internal",
 }
@@ -565,12 +650,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    MischievousType;
+    type:    BraggadociousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum MischievousType {
+export enum BraggadociousType {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
@@ -807,6 +892,42 @@ export async function bubbelApiGetClubMembers(req: InGetClubMembers): Promise<Re
         }
 export async function bubbelApiGetUserClubs(req: InGetUserClubs): Promise<ResGetUserClubs> {
             let fetchRes = await fetch(bubbelBathDev + '/api/get_user_clubs', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiRegexSearchClubs(req: InRegexSearchClubs): Promise<ResRegexSearchClubs> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/regex_search_clubs', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiRegexSearchUsers(req: InRegexSearchUsers): Promise<ResRegexSearchUsers> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/regex_search_users', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetRandomClubs(req: InGetRandomClubs): Promise<ResGetRandomClubs> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_random_clubs', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
