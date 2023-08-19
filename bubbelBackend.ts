@@ -45,6 +45,10 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t48?: InUnsafeAddFile;
     t49?: ResUnsafeAddFile;
     t5?:  ResDeauthUser;
+    t50?: DataChannelInitRequest;
+    t51?: DataChannelInitResponse;
+    t52?: DataChannelRequest;
+    t53?: DataChannelResponse;
     t6?:  InVerifyAccount;
     t7?:  ResVerifyAccount;
     t8?:  InSendVerify;
@@ -228,6 +232,7 @@ export enum IndigoType {
 
 export interface GetClubProfileOut {
     banner?:       null | string;
+    dc_id:         number;
     description?:  null | string;
     display_name?: null | string;
     name:          string;
@@ -245,6 +250,7 @@ export interface InAuthUser {
 export interface InSetClubProfile {
     banner?:       null | string;
     club_id:       number;
+    dc_id?:        number | null;
     description?:  null | string;
     display_name?: null | string;
     name?:         null | string;
@@ -274,6 +280,7 @@ export enum IndecentType {
     Internal = "Internal",
     NoAuth = "NoAuth",
     NoAuthOwner = "NoAuthOwner",
+    SettingDCNotSupportedYet = "SettingDCNotSupportedYet",
     SettingNameNotSupportedYet = "SettingNameNotSupportedYet",
     SettingOwnerNotSupportedYet = "SettingOwnerNotSupportedYet",
 }
@@ -612,6 +619,7 @@ export interface GetRandomClubsOut {
 
 export interface ClubProfile {
     banner?:       null | string;
+    dc_id:         number;
     description?:  null | string;
     display_name?: null | string;
     name:          string;
@@ -674,6 +682,89 @@ export interface ResDeauthUser {
     [property: string]: any;
 }
 
+export interface DataChannelInitRequest {
+    channel: number;
+    token:   string;
+    [property: string]: any;
+}
+
+export interface DataChannelInitResponse {
+    current_chunk?: number | null;
+    error?:         null | DataChannelInitError;
+    [property: string]: any;
+}
+
+export interface DataChannelInitError {
+    type:    BraggadociousType;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum BraggadociousType {
+    ChannelNotFound = "ChannelNotFound",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+}
+
+export interface DataChannelRequest {
+    command: DataChannelCommandType;
+    token:   string;
+    [property: string]: any;
+}
+
+export interface DataChannelCommandType {
+    message?: Message;
+    type:     DataChannelCommandTypeType;
+    chunk?:   number;
+    index?:   number;
+    [property: string]: any;
+}
+
+export interface Message {
+    text: string;
+    type: MessageType;
+    [property: string]: any;
+}
+
+export enum MessageType {
+    Text = "Text",
+}
+
+export enum DataChannelCommandTypeType {
+    Delete = "Delete",
+    Send = "Send",
+}
+
+export interface DataChannelResponse {
+    error?: null | DataChannelError;
+    res?:   null | DataChannelResponseType;
+    [property: string]: any;
+}
+
+export interface DataChannelError {
+    type:    BraggadociousType;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export interface DataChannelResponseType {
+    item: DataChannelItem;
+    type: DataChannelResponseTypeType;
+    [property: string]: any;
+}
+
+export interface DataChannelItem {
+    edit_time?: number | null;
+    message:    Message;
+    post_time:  number;
+    sender:     number;
+    [property: string]: any;
+}
+
+export enum DataChannelResponseTypeType {
+    OnNew = "OnNew",
+}
+
 export interface InVerifyAccount {
     code: string;
     [property: string]: any;
@@ -689,12 +780,12 @@ export interface ResVerifyAccount {
  * My favorite error message.
  */
 export interface VerifyAccountError {
-    type:    BraggadociousType;
+    type:    Type1;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum BraggadociousType {
+export enum Type1 {
     CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
     Internal = "Internal",
 }
@@ -714,12 +805,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    Type1;
+    type:    Type2;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type1 {
+export enum Type2 {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
