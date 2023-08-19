@@ -40,6 +40,10 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t43?: ResRegexSearchUsers;
     t44?: InGetRandomClubs;
     t45?: ResGetRandomClubs;
+    t46?: InCheckToken;
+    t47?: ResCheckToken;
+    t48?: InUnsafeAddFile;
+    t49?: ResUnsafeAddFile;
     t5?:  ResDeauthUser;
     t6?:  InVerifyAccount;
     t7?:  ResVerifyAccount;
@@ -182,9 +186,15 @@ export interface ResCreateClub {
 }
 
 export interface CreateClubError {
-    type:    FluffyType;
+    type:    StickyType;
     ierror?: string;
     [property: string]: any;
+}
+
+export enum StickyType {
+    ClubAlreadyExists = "ClubAlreadyExists",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
 }
 
 export interface CreateClubOut {
@@ -205,12 +215,12 @@ export interface ResGetClubProfile {
 }
 
 export interface GetClubProfileError {
-    type:    StickyType;
+    type:    IndigoType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum StickyType {
+export enum IndigoType {
     ClubNotFound = "ClubNotFound",
     Internal = "Internal",
     NoAuth = "NoAuth",
@@ -254,12 +264,12 @@ export interface ResSetClubProfile {
  * The user is not the owner and therefore is not authorized.
  */
 export interface SetClubProfileError {
-    type:    IndigoType;
+    type:    IndecentType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum IndigoType {
+export enum IndecentType {
     ClubNotFound = "ClubNotFound",
     Internal = "Internal",
     NoAuth = "NoAuth",
@@ -284,12 +294,12 @@ export interface ResDeleteClub {
  * The user is not the owner and therefore is not authorized.
  */
 export interface DeleteClubError {
-    type:    IndecentType;
+    type:    HilariousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum IndecentType {
+export enum HilariousType {
     ClubNotFound = "ClubNotFound",
     Internal = "Internal",
     NoAuth = "NoAuth",
@@ -336,12 +346,12 @@ export interface ResAddFriendConnection {
 }
 
 export interface AddFriendConnectionError {
-    type:    HilariousType;
+    type:    AmbitiousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum HilariousType {
+export enum AmbitiousType {
     AlreadyConnected = "AlreadyConnected",
     CannotAddSelf = "CannotAddSelf",
     Internal = "Internal",
@@ -386,12 +396,13 @@ export interface ResAuthUser {
  * Got an error from a cryptography function. This error should never occur.
  */
 export interface AuthUserError {
-    type:    AmbitiousType;
-    ierror?: string;
+    type:     CunningType;
+    user_id?: number;
+    ierror?:  string;
     [property: string]: any;
 }
 
-export enum AmbitiousType {
+export enum CunningType {
     Internal = "Internal",
     InvalidCredentials = "InvalidCredentials",
     InvalidPasswordCryto = "InvalidPasswordCryto",
@@ -437,12 +448,12 @@ export interface ResJoinClub {
 }
 
 export interface JoinClubError {
-    type:    CunningType;
+    type:    MagentaType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum CunningType {
+export enum MagentaType {
     AlreadyJoined = "AlreadyJoined",
     Internal = "Internal",
     NoAuth = "NoAuth",
@@ -461,12 +472,12 @@ export interface ResUnjoinClub {
 }
 
 export interface UnjoinClubError {
-    type:    MagentaType;
+    type:    FriskyType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum MagentaType {
+export enum FriskyType {
     CannotUnjoinAsOwner = "CannotUnjoinAsOwner",
     ClubNotFound = "ClubNotFound",
     Internal = "Internal",
@@ -539,12 +550,12 @@ export interface ResRegexSearchClubs {
 }
 
 export interface RegexSearchClubsError {
-    type:    FriskyType;
+    type:    MischievousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum FriskyType {
+export enum MischievousType {
     Internal = "Internal",
     RegexLimit = "RegexLimit",
 }
@@ -567,7 +578,7 @@ export interface ResRegexSearchUsers {
 }
 
 export interface RegexSearchUsersError {
-    type:    FriskyType;
+    type:    MischievousType;
     ierror?: string;
     [property: string]: any;
 }
@@ -609,6 +620,54 @@ export interface ClubProfile {
     [property: string]: any;
 }
 
+export interface InCheckToken {
+    token: string;
+    [property: string]: any;
+}
+
+export interface ResCheckToken {
+    error?: null | CheckTokenError;
+    res?:   null | CheckTokenOut;
+    [property: string]: any;
+}
+
+export interface CheckTokenError {
+    type: CheckTokenErrorType;
+    [property: string]: any;
+}
+
+export enum CheckTokenErrorType {
+    Ignore = "Ignore",
+}
+
+export interface CheckTokenOut {
+    user_id?: number | null;
+    [property: string]: any;
+}
+
+export interface InUnsafeAddFile {
+    data:      string;
+    extension: string;
+    [property: string]: any;
+}
+
+export interface ResUnsafeAddFile {
+    error?: null | UnsafeAddFileError;
+    res?:   null | UnsafeAddFileOut;
+    [property: string]: any;
+}
+
+export interface UnsafeAddFileError {
+    ierror: string;
+    type:   GetClubMembersErrorType;
+    [property: string]: any;
+}
+
+export interface UnsafeAddFileOut {
+    file_link: string;
+    [property: string]: any;
+}
+
 export interface ResDeauthUser {
     error?: null;
     res?:   null;
@@ -630,12 +689,12 @@ export interface ResVerifyAccount {
  * My favorite error message.
  */
 export interface VerifyAccountError {
-    type:    MischievousType;
+    type:    BraggadociousType;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum MischievousType {
+export enum BraggadociousType {
     CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
     Internal = "Internal",
 }
@@ -655,12 +714,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    BraggadociousType;
+    type:    Type1;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum BraggadociousType {
+export enum Type1 {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
@@ -933,6 +992,30 @@ export async function bubbelApiRegexSearchUsers(req: InRegexSearchUsers): Promis
         }
 export async function bubbelApiGetRandomClubs(req: InGetRandomClubs): Promise<ResGetRandomClubs> {
             let fetchRes = await fetch(bubbelBathDev + '/api/get_random_clubs', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiCheckToken(req: InCheckToken): Promise<ResCheckToken> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/check_token', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiUnsafeAddFile(req: InUnsafeAddFile): Promise<ResUnsafeAddFile> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/unsafe_add_file', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',

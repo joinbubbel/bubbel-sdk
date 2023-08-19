@@ -8,11 +8,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 interface backendService {
     @POST("/api/create_user")
@@ -61,6 +56,10 @@ interface backendService {
     fun regexSearchUsers(@Body userData: InRegexSearchUsers): Call<ResRegexSearchUsers>
     @POST("/api/get_random_clubs")
     fun getRandomClubs(@Body userData: InGetRandomClubs): Call<ResGetRandomClubs>
+    @POST("/api/check_token")
+    fun checkToken(@Body userData: InCheckToken): Call<ResCheckToken>
+    @POST("/api/unsafe_add_file")
+    fun unsafeAddFile(@Body userData: InUnsafeAddFile): Call<ResUnsafeAddFile>
 }
 
 //  This was originally went in "RetrofitClient.kt"
@@ -442,6 +441,38 @@ class BackendRepository {
             }
 
             override fun onFailure(call: Call<ResGetRandomClubs>, t: Throwable) {
+                onError(t.message ?: "Network request failed")
+            }
+        })
+    }
+    suspend fun checkToken(request: InCheckToken,  onSuccess: (ResCheckToken?) -> Unit, onError: (String) -> Unit){
+        backendService.checkToken(request).enqueue(object : Callback<ResCheckToken> {
+            override fun onResponse(call: Call<ResCheckToken>, response: Response<ResCheckToken>) {
+                if (response.isSuccessful) {
+                    val out: ResCheckToken? = response.body()
+                    onSuccess(out)
+                } else {
+                    onError(response.errorBody()?.string() ?: "Unknown error occurred")
+                }
+            }
+
+            override fun onFailure(call: Call<ResCheckToken>, t: Throwable) {
+                onError(t.message ?: "Network request failed")
+            }
+        })
+    }
+    suspend fun unsafeAddFile(request: InUnsafeAddFile,  onSuccess: (ResUnsafeAddFile?) -> Unit, onError: (String) -> Unit){
+        backendService.unsafeAddFile(request).enqueue(object : Callback<ResUnsafeAddFile> {
+            override fun onResponse(call: Call<ResUnsafeAddFile>, response: Response<ResUnsafeAddFile>) {
+                if (response.isSuccessful) {
+                    val out: ResUnsafeAddFile? = response.body()
+                    onSuccess(out)
+                } else {
+                    onError(response.errorBody()?.string() ?: "Unknown error occurred")
+                }
+            }
+
+            override fun onFailure(call: Call<ResUnsafeAddFile>, t: Throwable) {
                 onError(t.message ?: "Network request failed")
             }
         })

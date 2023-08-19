@@ -49,6 +49,10 @@ struct BubbelCodegenOut: Codable {
     let t43: ResRegexSearchUsers?
     let t44: InGetRandomClubs?
     let t45: ResGetRandomClubs?
+    let t46: InCheckToken?
+    let t47: ResCheckToken?
+    let t48: InUnsafeAddFile?
+    let t49: ResUnsafeAddFile?
     let t5: ResDeauthUser?
     let t6: InVerifyAccount?
     let t7: ResVerifyAccount?
@@ -116,6 +120,10 @@ extension BubbelCodegenOut {
         t43: ResRegexSearchUsers?? = nil,
         t44: InGetRandomClubs?? = nil,
         t45: ResGetRandomClubs?? = nil,
+        t46: InCheckToken?? = nil,
+        t47: ResCheckToken?? = nil,
+        t48: InUnsafeAddFile?? = nil,
+        t49: ResUnsafeAddFile?? = nil,
         t5: ResDeauthUser?? = nil,
         t6: InVerifyAccount?? = nil,
         t7: ResVerifyAccount?? = nil,
@@ -164,6 +172,10 @@ extension BubbelCodegenOut {
             t43: t43 ?? self.t43,
             t44: t44 ?? self.t44,
             t45: t45 ?? self.t45,
+            t46: t46 ?? self.t46,
+            t47: t47 ?? self.t47,
+            t48: t48 ?? self.t48,
+            t49: t49 ?? self.t49,
             t5: t5 ?? self.t5,
             t6: t6 ?? self.t6,
             t7: t7 ?? self.t7,
@@ -930,7 +942,7 @@ extension ResCreateClub {
 
 // MARK: - CreateClubError
 struct CreateClubError: Codable {
-    let type: FluffyType
+    let type: StickyType
     let ierror: String?
 }
 
@@ -953,7 +965,7 @@ extension CreateClubError {
     }
 
     func with(
-        type: FluffyType? = nil,
+        type: StickyType? = nil,
         ierror: String?? = nil
     ) -> CreateClubError {
         return CreateClubError(
@@ -969,6 +981,12 @@ extension CreateClubError {
     func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
         return String(data: try self.jsonData(), encoding: encoding)
     }
+}
+
+enum StickyType: String, Codable {
+    case clubAlreadyExists = "ClubAlreadyExists"
+    case noAuth = "NoAuth"
+    case typeInternal = "Internal"
 }
 
 // MARK: - CreateClubOut
@@ -1108,7 +1126,7 @@ extension ResGetClubProfile {
 
 // MARK: - GetClubProfileError
 struct GetClubProfileError: Codable {
-    let type: StickyType
+    let type: IndigoType
     let ierror: String?
 }
 
@@ -1131,7 +1149,7 @@ extension GetClubProfileError {
     }
 
     func with(
-        type: StickyType? = nil,
+        type: IndigoType? = nil,
         ierror: String?? = nil
     ) -> GetClubProfileError {
         return GetClubProfileError(
@@ -1149,7 +1167,7 @@ extension GetClubProfileError {
     }
 }
 
-enum StickyType: String, Codable {
+enum IndigoType: String, Codable {
     case clubNotFound = "ClubNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -1369,7 +1387,7 @@ extension ResSetClubProfile {
 /// The user is not the owner and therefore is not authorized.
 // MARK: - SetClubProfileError
 struct SetClubProfileError: Codable {
-    let type: IndigoType
+    let type: IndecentType
     let ierror: String?
 }
 
@@ -1392,7 +1410,7 @@ extension SetClubProfileError {
     }
 
     func with(
-        type: IndigoType? = nil,
+        type: IndecentType? = nil,
         ierror: String?? = nil
     ) -> SetClubProfileError {
         return SetClubProfileError(
@@ -1410,7 +1428,7 @@ extension SetClubProfileError {
     }
 }
 
-enum IndigoType: String, Codable {
+enum IndecentType: String, Codable {
     case clubNotFound = "ClubNotFound"
     case noAuth = "NoAuth"
     case noAuthOwner = "NoAuthOwner"
@@ -1513,7 +1531,7 @@ extension ResDeleteClub {
 /// The user is not the owner and therefore is not authorized.
 // MARK: - DeleteClubError
 struct DeleteClubError: Codable {
-    let type: IndecentType
+    let type: HilariousType
     let ierror: String?
 }
 
@@ -1536,7 +1554,7 @@ extension DeleteClubError {
     }
 
     func with(
-        type: IndecentType? = nil,
+        type: HilariousType? = nil,
         ierror: String?? = nil
     ) -> DeleteClubError {
         return DeleteClubError(
@@ -1554,7 +1572,7 @@ extension DeleteClubError {
     }
 }
 
-enum IndecentType: String, Codable {
+enum HilariousType: String, Codable {
     case clubNotFound = "ClubNotFound"
     case noAuth = "NoAuth"
     case noAuthOwner = "NoAuthOwner"
@@ -1838,7 +1856,7 @@ extension ResAddFriendConnection {
 
 // MARK: - AddFriendConnectionError
 struct AddFriendConnectionError: Codable {
-    let type: HilariousType
+    let type: AmbitiousType
     let ierror: String?
 }
 
@@ -1861,7 +1879,7 @@ extension AddFriendConnectionError {
     }
 
     func with(
-        type: HilariousType? = nil,
+        type: AmbitiousType? = nil,
         ierror: String?? = nil
     ) -> AddFriendConnectionError {
         return AddFriendConnectionError(
@@ -1879,7 +1897,7 @@ extension AddFriendConnectionError {
     }
 }
 
-enum HilariousType: String, Codable {
+enum AmbitiousType: String, Codable {
     case alreadyConnected = "AlreadyConnected"
     case cannotAddSelf = "CannotAddSelf"
     case noAuth = "NoAuth"
@@ -2108,8 +2126,15 @@ extension ResAuthUser {
 /// Got an error from a cryptography function. This error should never occur.
 // MARK: - AuthUserError
 struct AuthUserError: Codable {
-    let type: AmbitiousType
+    let type: CunningType
+    let userID: Int?
     let ierror: String?
+
+    enum CodingKeys: String, CodingKey {
+        case type
+        case userID = "user_id"
+        case ierror
+    }
 }
 
 // MARK: AuthUserError convenience initializers and mutators
@@ -2131,11 +2156,13 @@ extension AuthUserError {
     }
 
     func with(
-        type: AmbitiousType? = nil,
+        type: CunningType? = nil,
+        userID: Int?? = nil,
         ierror: String?? = nil
     ) -> AuthUserError {
         return AuthUserError(
             type: type ?? self.type,
+            userID: userID ?? self.userID,
             ierror: ierror ?? self.ierror
         )
     }
@@ -2149,7 +2176,7 @@ extension AuthUserError {
     }
 }
 
-enum AmbitiousType: String, Codable {
+enum CunningType: String, Codable {
     case invalidCredentials = "InvalidCredentials"
     case invalidPasswordCryto = "InvalidPasswordCryto"
     case typeInternal = "Internal"
@@ -2428,7 +2455,7 @@ extension ResJoinClub {
 
 // MARK: - JoinClubError
 struct JoinClubError: Codable {
-    let type: CunningType
+    let type: MagentaType
     let ierror: String?
 }
 
@@ -2451,7 +2478,7 @@ extension JoinClubError {
     }
 
     func with(
-        type: CunningType? = nil,
+        type: MagentaType? = nil,
         ierror: String?? = nil
     ) -> JoinClubError {
         return JoinClubError(
@@ -2469,7 +2496,7 @@ extension JoinClubError {
     }
 }
 
-enum CunningType: String, Codable {
+enum MagentaType: String, Codable {
     case alreadyJoined = "AlreadyJoined"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -2568,7 +2595,7 @@ extension ResUnjoinClub {
 
 // MARK: - UnjoinClubError
 struct UnjoinClubError: Codable {
-    let type: MagentaType
+    let type: FriskyType
     let ierror: String?
 }
 
@@ -2591,7 +2618,7 @@ extension UnjoinClubError {
     }
 
     func with(
-        type: MagentaType? = nil,
+        type: FriskyType? = nil,
         ierror: String?? = nil
     ) -> UnjoinClubError {
         return UnjoinClubError(
@@ -2609,7 +2636,7 @@ extension UnjoinClubError {
     }
 }
 
-enum MagentaType: String, Codable {
+enum FriskyType: String, Codable {
     case cannotUnjoinAsOwner = "CannotUnjoinAsOwner"
     case clubNotFound = "ClubNotFound"
     case noAuth = "NoAuth"
@@ -3093,7 +3120,7 @@ extension ResRegexSearchClubs {
 
 // MARK: - RegexSearchClubsError
 struct RegexSearchClubsError: Codable {
-    let type: FriskyType
+    let type: MischievousType
     let ierror: String?
 }
 
@@ -3116,7 +3143,7 @@ extension RegexSearchClubsError {
     }
 
     func with(
-        type: FriskyType? = nil,
+        type: MischievousType? = nil,
         ierror: String?? = nil
     ) -> RegexSearchClubsError {
         return RegexSearchClubsError(
@@ -3134,7 +3161,7 @@ extension RegexSearchClubsError {
     }
 }
 
-enum FriskyType: String, Codable {
+enum MischievousType: String, Codable {
     case regexLimit = "RegexLimit"
     case typeInternal = "Internal"
 }
@@ -3300,7 +3327,7 @@ extension ResRegexSearchUsers {
 
 // MARK: - RegexSearchUsersError
 struct RegexSearchUsersError: Codable {
-    let type: FriskyType
+    let type: MischievousType
     let ierror: String?
 }
 
@@ -3323,7 +3350,7 @@ extension RegexSearchUsersError {
     }
 
     func with(
-        type: FriskyType? = nil,
+        type: MischievousType? = nil,
         ierror: String?? = nil
     ) -> RegexSearchUsersError {
         return RegexSearchUsersError(
@@ -3638,6 +3665,354 @@ extension ClubProfile {
     }
 }
 
+// MARK: - InCheckToken
+struct InCheckToken: Codable {
+    let token: String
+}
+
+// MARK: InCheckToken convenience initializers and mutators
+
+extension InCheckToken {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InCheckToken.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        token: String? = nil
+    ) -> InCheckToken {
+        return InCheckToken(
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResCheckToken
+struct ResCheckToken: Codable {
+    let error: CheckTokenError?
+    let res: CheckTokenOut?
+}
+
+// MARK: ResCheckToken convenience initializers and mutators
+
+extension ResCheckToken {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResCheckToken.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: CheckTokenError?? = nil,
+        res: CheckTokenOut?? = nil
+    ) -> ResCheckToken {
+        return ResCheckToken(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - CheckTokenError
+struct CheckTokenError: Codable {
+    let type: CheckTokenErrorType
+}
+
+// MARK: CheckTokenError convenience initializers and mutators
+
+extension CheckTokenError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(CheckTokenError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: CheckTokenErrorType? = nil
+    ) -> CheckTokenError {
+        return CheckTokenError(
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum CheckTokenErrorType: String, Codable {
+    case ignore = "Ignore"
+}
+
+// MARK: - CheckTokenOut
+struct CheckTokenOut: Codable {
+    let userID: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case userID = "user_id"
+    }
+}
+
+// MARK: CheckTokenOut convenience initializers and mutators
+
+extension CheckTokenOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(CheckTokenOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        userID: Int?? = nil
+    ) -> CheckTokenOut {
+        return CheckTokenOut(
+            userID: userID ?? self.userID
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - InUnsafeAddFile
+struct InUnsafeAddFile: Codable {
+    let data, inUnsafeAddFileExtension: String
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case inUnsafeAddFileExtension = "extension"
+    }
+}
+
+// MARK: InUnsafeAddFile convenience initializers and mutators
+
+extension InUnsafeAddFile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InUnsafeAddFile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        data: String? = nil,
+        inUnsafeAddFileExtension: String? = nil
+    ) -> InUnsafeAddFile {
+        return InUnsafeAddFile(
+            data: data ?? self.data,
+            inUnsafeAddFileExtension: inUnsafeAddFileExtension ?? self.inUnsafeAddFileExtension
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResUnsafeAddFile
+struct ResUnsafeAddFile: Codable {
+    let error: UnsafeAddFileError?
+    let res: UnsafeAddFileOut?
+}
+
+// MARK: ResUnsafeAddFile convenience initializers and mutators
+
+extension ResUnsafeAddFile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResUnsafeAddFile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: UnsafeAddFileError?? = nil,
+        res: UnsafeAddFileOut?? = nil
+    ) -> ResUnsafeAddFile {
+        return ResUnsafeAddFile(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - UnsafeAddFileError
+struct UnsafeAddFileError: Codable {
+    let ierror: String
+    let type: GetClubMembersErrorType
+}
+
+// MARK: UnsafeAddFileError convenience initializers and mutators
+
+extension UnsafeAddFileError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UnsafeAddFileError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ierror: String? = nil,
+        type: GetClubMembersErrorType? = nil
+    ) -> UnsafeAddFileError {
+        return UnsafeAddFileError(
+            ierror: ierror ?? self.ierror,
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - UnsafeAddFileOut
+struct UnsafeAddFileOut: Codable {
+    let fileLink: String
+
+    enum CodingKeys: String, CodingKey {
+        case fileLink = "file_link"
+    }
+}
+
+// MARK: UnsafeAddFileOut convenience initializers and mutators
+
+extension UnsafeAddFileOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UnsafeAddFileOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        fileLink: String? = nil
+    ) -> UnsafeAddFileOut {
+        return UnsafeAddFileOut(
+            fileLink: fileLink ?? self.fileLink
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 // MARK: - ResDeauthUser
 struct ResDeauthUser: Codable {
     let error, res: JSONNull?
@@ -3766,7 +4141,7 @@ extension ResVerifyAccount {
 /// My favorite error message.
 // MARK: - VerifyAccountError
 struct VerifyAccountError: Codable {
-    let type: MischievousType
+    let type: BraggadociousType
     let ierror: String?
 }
 
@@ -3789,7 +4164,7 @@ extension VerifyAccountError {
     }
 
     func with(
-        type: MischievousType? = nil,
+        type: BraggadociousType? = nil,
         ierror: String?? = nil
     ) -> VerifyAccountError {
         return VerifyAccountError(
@@ -3807,7 +4182,7 @@ extension VerifyAccountError {
     }
 }
 
-enum MischievousType: String, Codable {
+enum BraggadociousType: String, Codable {
     case codeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode"
     case typeInternal = "Internal"
 }
@@ -3902,7 +4277,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: BraggadociousType
+    let type: Type1
     let ierror: String?
 }
 
@@ -3925,7 +4300,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: BraggadociousType? = nil,
+        type: Type1? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -3943,7 +4318,7 @@ extension SendVerifyError {
     }
 }
 
-enum BraggadociousType: String, Codable {
+enum Type1: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
@@ -4576,5 +4951,37 @@ func bubbelApiGetRandomClubs(req: InGetRandomClubs) async throws -> ResGetRandom
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResGetRandomClubs.self, from: data)
+            return result
+        }
+func bubbelApiCheckToken(req: InCheckToken) async throws -> ResCheckToken {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/check_token")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResCheckToken.self, from: data)
+            return result
+        }
+func bubbelApiUnsafeAddFile(req: InUnsafeAddFile) async throws -> ResUnsafeAddFile {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/unsafe_add_file")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResUnsafeAddFile.self, from: data)
             return result
         }
