@@ -45,11 +45,19 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t48?: InUnsafeAddFile;
     t49?: ResUnsafeAddFile;
     t5?:  ResDeauthUser;
-    t50?: DataChannelInitRequest;
-    t51?: DataChannelInitResponse;
-    t52?: DataChannelRequest;
-    t53?: DataChannelResponse;
+    t50?: InGetDataChannelChunk;
+    t51?: ResGetDataChannelChunk;
+    t52?: InGetClubProfileWithName;
+    t53?: ResGetClubProfileWithName;
+    t54?: InGetRandomUsers;
+    t55?: ResGetRandomUsers;
+    t56?: InUsernameToID;
+    t57?: ResUsernameToID;
+    t58?: DataChannelInitRequest;
+    t59?: DataChannelInitResponse;
     t6?:  InVerifyAccount;
+    t60?: DataChannelRequest;
+    t61?: DataChannelResponse;
     t7?:  ResVerifyAccount;
     t8?:  InSendVerify;
     t9?:  ResSendVerify;
@@ -87,7 +95,7 @@ export interface CreateUserError {
 }
 
 export enum PurpleType {
-    EmailOrUsernametaken = "EmailOrUsernametaken",
+    EmailOrUsernameTaken = "EmailOrUsernameTaken",
     Internal = "Internal",
     InvalidEmail = "InvalidEmail",
     InvalidPassword = "InvalidPassword",
@@ -235,6 +243,7 @@ export interface GetClubProfileOut {
     dc_id:         number;
     description?:  null | string;
     display_name?: null | string;
+    is_member?:    boolean | null;
     name:          string;
     owner:         number;
     pfp?:          null | string;
@@ -682,6 +691,154 @@ export interface ResDeauthUser {
     [property: string]: any;
 }
 
+export interface InGetDataChannelChunk {
+    channel_id:  number;
+    chunk_index: number;
+    token:       string;
+    [property: string]: any;
+}
+
+export interface ResGetDataChannelChunk {
+    error?: null | GetDataChannelChunkError;
+    res?:   null | GetDataChannelChunkOut;
+    [property: string]: any;
+}
+
+export interface GetDataChannelChunkError {
+    type:    BraggadociousType;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum BraggadociousType {
+    ChannelNotFound = "ChannelNotFound",
+    ChunkNotFound = "ChunkNotFound",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+}
+
+export interface GetDataChannelChunkOut {
+    chunk: DataChunk;
+    [property: string]: any;
+}
+
+export interface DataChunk {
+    items: Array<null | DataChannelItem>;
+    [property: string]: any;
+}
+
+export interface DataChannelItem {
+    edit_time?: number | null;
+    message:    Message;
+    post_time:  number;
+    sender:     number;
+    [property: string]: any;
+}
+
+export interface Message {
+    text: string;
+    type: MessageType;
+    [property: string]: any;
+}
+
+export enum MessageType {
+    Text = "Text",
+}
+
+export interface InGetClubProfileWithName {
+    name:   string;
+    token?: null | string;
+    [property: string]: any;
+}
+
+export interface ResGetClubProfileWithName {
+    error?: null | GetClubProfileWithNameError;
+    res?:   null | GetClubProfileWithNameOut;
+    [property: string]: any;
+}
+
+export interface GetClubProfileWithNameError {
+    type:    Type1;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type1 {
+    ClubNotFound = "ClubNotFound",
+    Internal = "Internal",
+}
+
+export interface GetClubProfileWithNameOut {
+    banner?:       null | string;
+    dc_id:         number;
+    description?:  null | string;
+    display_name?: null | string;
+    is_member?:    boolean | null;
+    name:          string;
+    owner:         number;
+    pfp?:          null | string;
+    [property: string]: any;
+}
+
+export interface InGetRandomUsers {
+    _ignore?: null;
+    [property: string]: any;
+}
+
+export interface ResGetRandomUsers {
+    error?: null | GetRandomUsersError;
+    res?:   null | GetRandomUsersOut;
+    [property: string]: any;
+}
+
+export interface GetRandomUsersError {
+    ierror: string;
+    type:   GetClubMembersErrorType;
+    [property: string]: any;
+}
+
+export interface GetRandomUsersOut {
+    users: Array<Array<number | UserProfile>>;
+    [property: string]: any;
+}
+
+export interface UserProfile {
+    banner?:       null | string;
+    description?:  null | string;
+    display_name?: null | string;
+    name?:         null | string;
+    pfp?:          null | string;
+    user_id:       number;
+    [property: string]: any;
+}
+
+export interface InUsernameToID {
+    username: string;
+    [property: string]: any;
+}
+
+export interface ResUsernameToID {
+    error?: null | UsernameToIDError;
+    res?:   null | UsernameToIDOut;
+    [property: string]: any;
+}
+
+export interface UsernameToIDError {
+    type:    Type2;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type2 {
+    Internal = "Internal",
+    UserNotFound = "UserNotFound",
+}
+
+export interface UsernameToIDOut {
+    user_id: number;
+    [property: string]: any;
+}
+
 export interface DataChannelInitRequest {
     channel: number;
     token:   string;
@@ -695,15 +852,20 @@ export interface DataChannelInitResponse {
 }
 
 export interface DataChannelInitError {
-    type:    BraggadociousType;
+    type:    Type3;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum BraggadociousType {
+export enum Type3 {
     ChannelNotFound = "ChannelNotFound",
     Internal = "Internal",
     NoAuth = "NoAuth",
+}
+
+export interface InVerifyAccount {
+    code: string;
+    [property: string]: any;
 }
 
 export interface DataChannelRequest {
@@ -720,16 +882,6 @@ export interface DataChannelCommandType {
     [property: string]: any;
 }
 
-export interface Message {
-    text: string;
-    type: MessageType;
-    [property: string]: any;
-}
-
-export enum MessageType {
-    Text = "Text",
-}
-
 export enum DataChannelCommandTypeType {
     Delete = "Delete",
     Send = "Send",
@@ -742,7 +894,7 @@ export interface DataChannelResponse {
 }
 
 export interface DataChannelError {
-    type:    BraggadociousType;
+    type:    Type3;
     ierror?: string;
     [property: string]: any;
 }
@@ -753,21 +905,8 @@ export interface DataChannelResponseType {
     [property: string]: any;
 }
 
-export interface DataChannelItem {
-    edit_time?: number | null;
-    message:    Message;
-    post_time:  number;
-    sender:     number;
-    [property: string]: any;
-}
-
 export enum DataChannelResponseTypeType {
     OnNew = "OnNew",
-}
-
-export interface InVerifyAccount {
-    code: string;
-    [property: string]: any;
 }
 
 export interface ResVerifyAccount {
@@ -780,12 +919,12 @@ export interface ResVerifyAccount {
  * My favorite error message.
  */
 export interface VerifyAccountError {
-    type:    Type1;
+    type:    Type4;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type1 {
+export enum Type4 {
     CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
     Internal = "Internal",
 }
@@ -805,12 +944,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    Type2;
+    type:    Type5;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type2 {
+export enum Type5 {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
@@ -1107,6 +1246,54 @@ export async function bubbelApiCheckToken(req: InCheckToken): Promise<ResCheckTo
         }
 export async function bubbelApiUnsafeAddFile(req: InUnsafeAddFile): Promise<ResUnsafeAddFile> {
             let fetchRes = await fetch(bubbelBathDev + '/api/unsafe_add_file', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetDataChannelChunk(req: InGetDataChannelChunk): Promise<ResGetDataChannelChunk> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_data_channel_chunk', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetClubProfileWithName(req: InGetClubProfileWithName): Promise<ResGetClubProfileWithName> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_club_profile_with_name', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetRandomUsers(req: InGetRandomUsers): Promise<ResGetRandomUsers> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_random_users', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiUsernameToId(req: InUsernameToId): Promise<ResUsernameToId> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/username_to_id', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
