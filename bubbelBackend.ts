@@ -875,15 +875,17 @@ export interface DataChannelRequest {
 }
 
 export interface DataChannelCommandType {
-    message?: Message;
-    type:     DataChannelCommandTypeType;
-    chunk?:   number;
-    index?:   number;
+    message?:     Message;
+    type:         DataChannelCommandTypeType;
+    chunk?:       number;
+    index?:       number;
+    new_message?: Message;
     [property: string]: any;
 }
 
 export enum DataChannelCommandTypeType {
     Delete = "Delete",
+    Edit = "Edit",
     Send = "Send",
 }
 
@@ -894,18 +896,32 @@ export interface DataChannelResponse {
 }
 
 export interface DataChannelError {
-    type:    Type3;
+    type:    Type4;
     ierror?: string;
     [property: string]: any;
 }
 
+export enum Type4 {
+    ChannelNotFound = "ChannelNotFound",
+    ChunkNotFound = "ChunkNotFound",
+    DataItemDeleted = "DataItemDeleted",
+    DataItemNotFound = "DataItemNotFound",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+}
+
 export interface DataChannelResponseType {
-    item: DataChannelItem;
-    type: DataChannelResponseTypeType;
+    chunk:     number;
+    index:     number;
+    item?:     DataChannelItem;
+    type:      ResType;
+    new_item?: DataChannelItem;
     [property: string]: any;
 }
 
-export enum DataChannelResponseTypeType {
+export enum ResType {
+    OnDelete = "OnDelete",
+    OnEdit = "OnEdit",
     OnNew = "OnNew",
 }
 
@@ -919,12 +935,12 @@ export interface ResVerifyAccount {
  * My favorite error message.
  */
 export interface VerifyAccountError {
-    type:    Type4;
+    type:    Type5;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type4 {
+export enum Type5 {
     CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
     Internal = "Internal",
 }
@@ -944,12 +960,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    Type5;
+    type:    Type6;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type5 {
+export enum Type6 {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
