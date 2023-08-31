@@ -53,12 +53,24 @@ const bubbelBathDev = 'https://api.joinbubbel.com';export interface BubbelCodege
     t55?: ResGetRandomUsers;
     t56?: InUsernameToID;
     t57?: ResUsernameToID;
-    t58?: DataChannelInitRequest;
-    t59?: DataChannelInitResponse;
+    t58?: InCreateMessageRoom;
+    t59?: ResCreateMessageRoom;
     t6?:  InVerifyAccount;
-    t60?: DataChannelRequest;
-    t61?: DataChannelResponse;
+    t60?: InGetMessageRoom;
+    t61?: ResGetMessageRoom;
+    t62?: InJoinMessageRoom;
+    t63?: ResJoinMessageRoom;
+    t64?: InGetClubMessageRooms;
+    t65?: ResGetClubMessageRooms;
+    t66?: InGetMessageRoomMembers;
+    t67?: ResGetMessageRoomMembers;
+    t68?: InUploadBase64;
+    t69?: ResUploadBase64;
     t7?:  ResVerifyAccount;
+    t70?: DataChannelInitRequest;
+    t71?: DataChannelInitResponse;
+    t72?: DataChannelRequest;
+    t73?: DataChannelResponse;
     t8?:  InSendVerify;
     t9?:  ResSendVerify;
     [property: string]: any;
@@ -675,9 +687,15 @@ export interface ResUnsafeAddFile {
 }
 
 export interface UnsafeAddFileError {
-    ierror: string;
-    type:   GetClubMembersErrorType;
+    base64_error?: string;
+    type:          BraggadociousType;
+    ierror?:       string;
     [property: string]: any;
+}
+
+export enum BraggadociousType {
+    Internal = "Internal",
+    InvalidBase64 = "InvalidBase64",
 }
 
 export interface UnsafeAddFileOut {
@@ -705,12 +723,12 @@ export interface ResGetDataChannelChunk {
 }
 
 export interface GetDataChannelChunkError {
-    type:    BraggadociousType;
+    type:    Type1;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum BraggadociousType {
+export enum Type1 {
     ChannelNotFound = "ChannelNotFound",
     ChunkNotFound = "ChunkNotFound",
     Internal = "Internal",
@@ -758,12 +776,12 @@ export interface ResGetClubProfileWithName {
 }
 
 export interface GetClubProfileWithNameError {
-    type:    Type1;
+    type:    Type2;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type1 {
+export enum Type2 {
     ClubNotFound = "ClubNotFound",
     Internal = "Internal",
 }
@@ -824,12 +842,12 @@ export interface ResUsernameToID {
 }
 
 export interface UsernameToIDError {
-    type:    Type2;
+    type:    Type3;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type2 {
+export enum Type3 {
     Internal = "Internal",
     UserNotFound = "UserNotFound",
 }
@@ -837,6 +855,209 @@ export enum Type2 {
 export interface UsernameToIDOut {
     user_id: number;
     [property: string]: any;
+}
+
+export interface InCreateMessageRoom {
+    club_id: number;
+    name:    string;
+    token:   string;
+    [property: string]: any;
+}
+
+export interface ResCreateMessageRoom {
+    error?: null | CreateMessageRoomError;
+    res?:   null | CreateMessageRoomOut;
+    [property: string]: any;
+}
+
+export interface CreateMessageRoomError {
+    type:    Type4;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type4 {
+    ClubNotFound = "ClubNotFound",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+    NotOwner = "NotOwner",
+}
+
+export interface CreateMessageRoomOut {
+    message_room_id: number;
+    [property: string]: any;
+}
+
+export interface InVerifyAccount {
+    code: string;
+    [property: string]: any;
+}
+
+export interface InGetMessageRoom {
+    message_room_id: number;
+    token:           string;
+    [property: string]: any;
+}
+
+export interface ResGetMessageRoom {
+    error?: null | GetMessageRoomError;
+    res?:   null | GetMessageRoomOut;
+    [property: string]: any;
+}
+
+export interface GetMessageRoomError {
+    type:    Type5;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type5 {
+    Internal = "Internal",
+    MessageRoomNotFound = "MessageRoomNotFound",
+    NoAuth = "NoAuth",
+    NotMessageRoomMember = "NotMessageRoomMember",
+}
+
+export interface GetMessageRoomOut {
+    club_id: number;
+    dc_id:   number;
+    name?:   null | string;
+    [property: string]: any;
+}
+
+export interface InJoinMessageRoom {
+    club_id:         number;
+    message_room_id: number;
+    token:           string;
+    [property: string]: any;
+}
+
+export interface ResJoinMessageRoom {
+    error?: null | JoinMessageRoomError;
+    res?:   { [key: string]: any } | null;
+    [property: string]: any;
+}
+
+export interface JoinMessageRoomError {
+    type:    Type6;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type6 {
+    AlreadyJoined = "AlreadyJoined",
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+    NotClubMember = "NotClubMember",
+}
+
+export interface InGetClubMessageRooms {
+    club_id: number;
+    token:   string;
+    [property: string]: any;
+}
+
+export interface ResGetClubMessageRooms {
+    error?: null | GetClubMessageRoomsError;
+    res?:   null | GetClubMessageRoomsOut;
+    [property: string]: any;
+}
+
+export interface GetClubMessageRoomsError {
+    type:    Type7;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type7 {
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+    NotClubMember = "NotClubMember",
+}
+
+export interface GetClubMessageRoomsOut {
+    message_rooms: number[];
+    [property: string]: any;
+}
+
+export interface InGetMessageRoomMembers {
+    message_room_id: number;
+    token:           string;
+    [property: string]: any;
+}
+
+export interface ResGetMessageRoomMembers {
+    error?: null | GetMessageRoomMembersError;
+    res?:   null | GetMessageRoomMembersOut;
+    [property: string]: any;
+}
+
+export interface GetMessageRoomMembersError {
+    type:    Type8;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type8 {
+    Internal = "Internal",
+    NoAuth = "NoAuth",
+    NotMessageRoomMember = "NotMessageRoomMember",
+}
+
+export interface GetMessageRoomMembersOut {
+    members: number[];
+    [property: string]: any;
+}
+
+export interface InUploadBase64 {
+    class_name: string;
+    data:       string;
+    token:      string;
+    [property: string]: any;
+}
+
+export interface ResUploadBase64 {
+    error?: null | UploadBase64Error;
+    res?:   null | UploadBase64Out;
+    [property: string]: any;
+}
+
+export interface UploadBase64Error {
+    type:    Type9;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type9 {
+    DataRejected = "DataRejected",
+    Internal = "Internal",
+    InvalidBase64 = "InvalidBase64",
+    NoAuth = "NoAuth",
+}
+
+export interface UploadBase64Out {
+    object_name: string;
+    [property: string]: any;
+}
+
+export interface ResVerifyAccount {
+    error?: null | VerifyAccountError;
+    res?:   null;
+    [property: string]: any;
+}
+
+/**
+ * My favorite error message.
+ */
+export interface VerifyAccountError {
+    type:    Type10;
+    ierror?: string;
+    [property: string]: any;
+}
+
+export enum Type10 {
+    CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
+    Internal = "Internal",
 }
 
 export interface DataChannelInitRequest {
@@ -852,20 +1073,15 @@ export interface DataChannelInitResponse {
 }
 
 export interface DataChannelInitError {
-    type:    Type3;
+    type:    Type11;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type3 {
+export enum Type11 {
     ChannelNotFound = "ChannelNotFound",
     Internal = "Internal",
     NoAuth = "NoAuth",
-}
-
-export interface InVerifyAccount {
-    code: string;
-    [property: string]: any;
 }
 
 export interface DataChannelRequest {
@@ -896,12 +1112,12 @@ export interface DataChannelResponse {
 }
 
 export interface DataChannelError {
-    type:    Type4;
+    type:    Type12;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type4 {
+export enum Type12 {
     ChannelNotFound = "ChannelNotFound",
     ChunkNotFound = "ChunkNotFound",
     DataItemDeleted = "DataItemDeleted",
@@ -911,10 +1127,10 @@ export enum Type4 {
 }
 
 export interface DataChannelResponseType {
-    chunk:     number;
-    index:     number;
     item?:     DataChannelItem;
     type:      ResType;
+    chunk?:    number;
+    index?:    number;
     new_item?: DataChannelItem;
     [property: string]: any;
 }
@@ -923,26 +1139,6 @@ export enum ResType {
     OnDelete = "OnDelete",
     OnEdit = "OnEdit",
     OnNew = "OnNew",
-}
-
-export interface ResVerifyAccount {
-    error?: null | VerifyAccountError;
-    res?:   null;
-    [property: string]: any;
-}
-
-/**
- * My favorite error message.
- */
-export interface VerifyAccountError {
-    type:    Type5;
-    ierror?: string;
-    [property: string]: any;
-}
-
-export enum Type5 {
-    CodeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode",
-    Internal = "Internal",
 }
 
 export interface InSendVerify {
@@ -960,12 +1156,12 @@ export interface ResSendVerify {
  * Failed to send the verification message (usually an email error).
  */
 export interface SendVerifyError {
-    type:    Type6;
+    type:    Type13;
     ierror?: string;
     [property: string]: any;
 }
 
-export enum Type6 {
+export enum Type13 {
     Internal = "Internal",
     ResendTooSoon = "ResendTooSoon",
     SendVerification = "SendVerification",
@@ -1310,6 +1506,78 @@ export async function bubbelApiGetRandomUsers(req: InGetRandomUsers): Promise<Re
         }
 export async function bubbelApiUsernameToId(req: InUsernameToId): Promise<ResUsernameToId> {
             let fetchRes = await fetch(bubbelBathDev + '/api/username_to_id', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiCreateMessageRoom(req: InCreateMessageRoom): Promise<ResCreateMessageRoom> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/create_message_room', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetMessageRoom(req: InGetMessageRoom): Promise<ResGetMessageRoom> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_message_room', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiJoinMessageRoom(req: InJoinMessageRoom): Promise<ResJoinMessageRoom> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/join_message_room', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetClubMessageRooms(req: InGetClubMessageRooms): Promise<ResGetClubMessageRooms> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_club_message_rooms', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiGetMessageRoomMembers(req: InGetMessageRoomMembers): Promise<ResGetMessageRoomMembers> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/get_message_room_members', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify(req),
+            });
+            let resText = await fetchRes.text();
+            return JSON.parse(resText);
+        }
+export async function bubbelApiUploadBase64(req: InUploadBase64): Promise<ResUploadBase64> {
+            let fetchRes = await fetch(bubbelBathDev + '/api/upload_base64', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
